@@ -10,21 +10,12 @@ def saveArrs(uArr, vArr, bArr, phiArr,dt,outputFile):
         np.save(outFile,dt)
     return 0
 
-<<<<<<< HEAD
-def longRun(Ra,Pr,alpha,Nx,Nz,ell,beta,T,fileName=None):
-    testProb = expHeat_Problem(Ra,Pr,alpha,Nx,Nz,ell,beta)
-    testProb.initialize()
-    testProb.solve_system(T,True,False,True)
-    if fileName is None:
-        fileName = 'Ra' + str(Ra) + 'Pr' + str(Pr) + 'alpha' + str(alpha) + 'ell' + str(ell) + 'beta' + str(beta) + 'Nx' + str(Nx) + 'Nz' + str(Nz) + '_T'+str(T)+'.npy'
-=======
 def longRun(R,Pr,alpha,Nx,Nz,ell,beta,T,timestep, fileName=None):
     testProb = expHeat_Problem(R,Pr,alpha,Nx,Nz,ell,beta,time_step=timestep)
     testProb.initialize()
     testProb.solve_system(T,True,False,True)
     if fileName is None:
         fileName = 'R' + str(R) + 'Pr' + str(Pr) + 'alpha' + str(alpha) + 'ell' + str(ell) + 'beta' + str(beta) + 'Nx' + str(Nx) + 'Nz' + str(Nz) + '_T'+str(T)+'.npy'
->>>>>>> 51fec7a7cbb36f4bb08c49f671057e07ebaacbc5
     testProb.saveToFile(fileName)
 
 def getSteady(Ra,Pr,alpha,Nx,Nz,ell,beta,T,tol,guessFile,steadyStateFile,dtscale):
@@ -48,7 +39,6 @@ def branchFollow(Pr,alpha,Ra_start,num_steps,Ra_step, Nx, Nz,ell,beta,startFile,
     RaVals, NuVals = follow_branch(Pr,alpha,Ra_start,num_steps,Ra_step, Nx, Nz,ell,beta, startingGuess, starting_dt, T,tol)
     return RaVals, NuVals
 
-<<<<<<< HEAD
 def searchOverAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingFile,tol):
     uArr, vArr, bArr, phiArr, dt = open_fields(startingFile)
     starting_SS_state = arrsToStateVec(phiArr, bArr)
@@ -56,9 +46,6 @@ def searchOverAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingFile,
     alphaVals, NuVals = varyAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingGuess,dt,tol)
     return alphaVals, NuVals
 
-
-=======
->>>>>>> 51fec7a7cbb36f4bb08c49f671057e07ebaacbc5
 def refine(uArr,vArr,bArr,phiArr,alpha,Nx,Nz,scale):
     ##run this using only ONE processor or else will not work
     print(uArr.shape)
