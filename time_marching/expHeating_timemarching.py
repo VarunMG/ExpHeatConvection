@@ -57,14 +57,14 @@ def writeFields(fileName,time,b_var,u_var,v_var):
 #################
 
 # Parameters
-alpha = np.pi/10
+alpha = np.pi/5
 Nx, Nz = 1024, 256
-Rayleigh = 5e3
+Rayleigh = 1e5
 Prandtl = 7
 ell = 0.1
 beta = 0
 stop_sim_time = 200
-max_timestep= 0.01
+max_timestep= 0.0001
 
 dealias = 3/2
 timestepper = d3.RK443

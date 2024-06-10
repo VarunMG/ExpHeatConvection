@@ -10,12 +10,12 @@ def saveArrs(uArr, vArr, bArr, phiArr,dt,outputFile):
         np.save(outFile,dt)
     return 0
 
-def longRun(Ra,Pr,alpha,Nx,Nz,ell,beta,T,fileName=None):
-    testProb = expHeat_Problem(Ra,Pr,alpha,Nx,Nz,ell,beta)
+def longRun(R,Pr,alpha,Nx,Nz,ell,beta,T,timestep, fileName=None):
+    testProb = expHeat_Problem(R,Pr,alpha,Nx,Nz,ell,beta,time_step=timestep)
     testProb.initialize()
     testProb.solve_system(T,True,False,True)
     if fileName is None:
-        fileName = 'Ra' + str(Ra) + 'Pr' + str(Pr) + 'alpha' + str(alpha) + 'ell' + str(ell) + 'beta' + str(beta) + 'Nx' + str(Nx) + 'Nz' + str(Nz) + '_T'+str(T)+'.npy'
+        fileName = 'R' + str(R) + 'Pr' + str(Pr) + 'alpha' + str(alpha) + 'ell' + str(ell) + 'beta' + str(beta) + 'Nx' + str(Nx) + 'Nz' + str(Nz) + '_T'+str(T)+'.npy'
     testProb.saveToFile(fileName)
 
 def getSteady(Ra,Pr,alpha,Nx,Nz,ell,beta,T,tol,guessFile,steadyStateFile,dtscale):
@@ -118,8 +118,8 @@ def refine2(uArr,vArr,bArr,phiArr,alpha,NxOld,NzOld,NxNew,NzNew):
 ### For refining grid ###
 #########################
 '''
-dataFile = 'Ra67151.0Pr7alpha2.56201Nx180Nz130_SS.npy'
-newFile = 'Ra67151.0Pr7alpha2.56201Nx210Nz150_SS_refined.npy'
+dataFile = 'Ra85704.0Pr7alpha2.56201Nx180Nz130_SS.npy'
+newFile = 'Ra85704.0Pr7alpha2.56201Nx210Nz150_SS_refined.npy'
 NxOld = 180
 NzOld = 130
 alpha = 2.56201
@@ -148,32 +148,33 @@ saveArrs(uRef, vRef, bRef, phiRef,dt,newFile)
 ### for long run ###
 ####################
 '''
-Ra = 2000
+R = 3500
 Pr = 7
-alpha = 2.56201
-Nx = 90
-Nz = 60
+alpha = 2.5183
+Nx = 200
+Nz = 100
 ell = 0.1
-beta = 0
-T = 10
+beta = 1
+T = 50
+timestep = 0.1
 
-longRun(Ra,Pr,alpha,Nx,Nz,ell,beta,T)
+longRun(R,Pr,alpha,Nx,Nz,ell,beta,T,timestep)
 '''
 #########################################
 ### For finding a single steady state ###
 #########################################
 '''
-Ra = 30763
+Ra = 3500
 Pr = 7
-alpha=2.56201
-Nx=180
-Nz=130
+alpha=2.5183
+Nx=200
+Nz=100
 ell = 0.1
-beta = 0
-T=0.5
-dtscale = 1/1.1
-guessFile = 'Ra30763.0Pr7alpha2.56201Nx180Nz130_SS_refined.npy'
-steadyFile = 'Ra30763.0Pr7alpha2.56201Nx180Nz130_SS.npy'
+beta = 1
+T=1.0
+dtscale = 1
+guessFile = 'R3500Pr7alpha2.5183ell0.1beta1Nx200Nz100_T50.npy'
+steadyFile = 'R3500Pr7alpha2.5183ell0.1beta1Nx200Nz100_SS.npy'
 getSteady(Ra,Pr,alpha,Nx,Nz,ell,beta,T,1e-6,guessFile, steadyFile,dtscale)
 '''
 ##############################
@@ -181,17 +182,18 @@ getSteady(Ra,Pr,alpha,Nx,Nz,ell,beta,T,1e-6,guessFile, steadyFile,dtscale)
 ##############################
 
 Pr = 7
-alpha = 2.56201
-Ra_start = 67151
-num_steps = 5
-Ra_step = 1.05
-Nx = 180
-Nz = 130
+alpha = 2.5183
+Ra_start = 37923
+num_steps = 10
+Ra_step = 1.1
+Nx = 200
+Nz = 100
 ell = 0.1
-beta = 0
-startFile = 'Ra67151.0Pr7alpha2.56201Nx180Nz130_SS.npy'
+beta = 1
+startFile = 'Ra37923.0Pr7alpha2.5183Nx200Nz100_SS.npy'
 T = 1.0
 tol = 1e-6
-dtscale = 1/1.3
+dtscale = 1
 
 RaVals, NuVals = branchFollow(Pr, alpha, Ra_start, num_steps, Ra_step, Nx,Nz,ell,beta,startFile,T,tol,dtscale)
+
