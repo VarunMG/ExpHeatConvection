@@ -304,7 +304,6 @@ def findOptimalAlpha(Ra,Pr,Nx,Nz,starting_alpha,alpha_step,startingGuess,dt,tol,
         return alpha_Vals, Nu_Vals, alphaMax, NuMax
     return alpha_Vals, Nu_Vals, -1, -1
         
-<<<<<<< HEAD
 def varyAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingGuess,dt,tol):
     alpha = starting_alpha
     guess = startingGuess
@@ -341,7 +340,5 @@ def varyAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingGuess,dt,to
     logger.info('Nu values:')
     logger.info(NuVals)
     return alpha_Vals,NuVals
-=======
         
     
->>>>>>> 51fec7a7cbb36f4bb08c49f671057e07ebaacbc5
