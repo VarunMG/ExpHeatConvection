@@ -125,10 +125,6 @@ def refine2(uArr,vArr,bArr,phiArr,alpha,NxOld,NzOld,NxNew,NzNew):
 ### For refining grid ###
 #########################
 '''
-<<<<<<< HEAD
-dataFile = 'Ra67151.0Pr7alpha2.56201Nx180Nz130_SS.npy'
-newFile = 'Ra67151.0Pr7alpha2.56201Nx210Nz150_SS_refined.npy'
-=======
 dataFile = 'Ra85704.0Pr7alpha2.56201Nx180Nz130_SS.npy'
 newFile = 'Ra85704.0Pr7alpha2.56201Nx210Nz150_SS_refined.npy'
 >>>>>>> 51fec7a7cbb36f4bb08c49f671057e07ebaacbc5
@@ -160,18 +156,6 @@ saveArrs(uRef, vRef, bRef, phiRef,dt,newFile)
 ### for long run ###
 ####################
 '''
-<<<<<<< HEAD
-Ra = 2000
-Pr = 7
-alpha = 2.56201
-Nx = 90
-Nz = 60
-ell = 0.1
-beta = 0
-T = 10
-
-longRun(Ra,Pr,alpha,Nx,Nz,ell,beta,T)
-=======
 R = 3500
 Pr = 7
 alpha = 2.5183
@@ -183,25 +167,11 @@ T = 50
 timestep = 0.1
 
 longRun(R,Pr,alpha,Nx,Nz,ell,beta,T,timestep)
->>>>>>> 51fec7a7cbb36f4bb08c49f671057e07ebaacbc5
 '''
 #########################################
 ### For finding a single steady state ###
 #########################################
 '''
-<<<<<<< HEAD
-Ra = 30763
-Pr = 7
-alpha=2.56201
-Nx=180
-Nz=130
-ell = 0.1
-beta = 0
-T=0.5
-dtscale = 1/1.1
-guessFile = 'Ra30763.0Pr7alpha2.56201Nx180Nz130_SS_refined.npy'
-steadyFile = 'Ra30763.0Pr7alpha2.56201Nx180Nz130_SS.npy'
-=======
 Ra = 3500
 Pr = 7
 alpha=2.5183
@@ -213,7 +183,7 @@ T=1.0
 dtscale = 1
 guessFile = 'R3500Pr7alpha2.5183ell0.1beta1Nx200Nz100_T50.npy'
 steadyFile = 'R3500Pr7alpha2.5183ell0.1beta1Nx200Nz100_SS.npy'
->>>>>>> 51fec7a7cbb36f4bb08c49f671057e07ebaacbc5
+
 getSteady(Ra,Pr,alpha,Nx,Nz,ell,beta,T,1e-6,guessFile, steadyFile,dtscale)
 '''
 ##############################
