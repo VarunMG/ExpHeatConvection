@@ -39,6 +39,14 @@ def branchFollow(Pr,alpha,Ra_start,num_steps,Ra_step, Nx, Nz,ell,beta,startFile,
     RaVals, NuVals = follow_branch(Pr,alpha,Ra_start,num_steps,Ra_step, Nx, Nz,ell,beta, startingGuess, starting_dt, T,tol)
     return RaVals, NuVals
 
+def searchOverAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingFile,tol):
+    uArr, vArr, bArr, phiArr, dt = open_fields(startingFile)
+    starting_SS_state = arrsToStateVec(phiArr, bArr)
+    startingGuess = starting_SS_state
+    alphaVals, NuVals = varyAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingGuess,dt,tol)
+    return alphaVals, NuVals
+
+
 def refine(uArr,vArr,bArr,phiArr,alpha,Nx,Nz,scale):
     ##run this using only ONE processor or else will not work
     print(uArr.shape)
@@ -179,7 +187,7 @@ getSteady(Ra,Pr,alpha,Nx,Nz,ell,beta,T,1e-6,guessFile, steadyFile,dtscale)
 ##############################
 ### For following a branch ###
 ##############################
-
+'''
 Pr = 7
 alpha = 2.56201
 Ra_start = 67151
@@ -195,3 +203,21 @@ tol = 1e-6
 dtscale = 1/1.3
 
 RaVals, NuVals = branchFollow(Pr, alpha, Ra_start, num_steps, Ra_step, Nx,Nz,ell,beta,startFile,T,tol,dtscale)
+'''
+
+##################
+### Vary alpha ###
+##################
+
+startingFile = '/grad/gudibanda/expHeating_Convection/Ra10016.0Pr7alpha2.56201Nx120Nz84_SS.npy'
+Ra = 10016
+Pr = 7
+starting_alpha = 2.56201
+alpha_step = 0.1
+Nx = 120
+Nz = 84
+beta = 0
+ell = 0.1
+tol = 1e-6 
+
+searchOverAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingFile,tol)
