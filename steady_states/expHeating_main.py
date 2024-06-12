@@ -46,7 +46,7 @@ def searchOverAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingFile,
     alphaVals, NuVals = varyAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingGuess,dt,tol)
     return alphaVals, NuVals
 
-def refine(uArr,vArr,bArr,phiArr,alpha,Nx,Nz,scale):
+def refine(uArr,vArr,bArr,phiArr,alpha,Nx,Nz,scales):
     ##run this using only ONE processor or else will not work
     print(uArr.shape)
     print("--------")
@@ -62,10 +62,10 @@ def refine(uArr,vArr,bArr,phiArr,alpha,Nx,Nz,scale):
     v.load_from_global_grid_data(vArr)
     b.load_from_global_grid_data(bArr)
     phi.load_from_global_grid_data(phiArr)
-    u.change_scales(scale)
-    v.change_scales(scale)
-    b.change_scales(scale)
-    phi.change_scales(scale)
+    u.change_scales(scales)
+    v.change_scales(scales)
+    b.change_scales(scales)
+    phi.change_scales(scales)
     newuArr = u['g']
     newvArr = v['g']
     newbArr = b['g']
@@ -141,33 +141,34 @@ saveArrs(uRef, vRef, bRef, phiRef,dt,newFile)
 ### For refining grid by changing scale ###
 ###########################################
 '''
-dataFile = 'Ra4370.0Pr7alpha2.56201Nx100Nz70_SS.npy'
-newFile = 'Ra4370.0Pr7alpha2.56201Nx120Nz84_SS_refined.npy'
-Nxold = 100
-Nzold = 70
-alpha = 2.56201
-scale = 1.2
+dataFile = 'Ra37923.0Pr7alpha2.5183Nx200Nz100_SS.npy'
+newFile = 'Ra37923.0Pr7alpha2.5183Nx200Nz150_SS_refined.npy'
+Nxold = 200
+Nzold = 100
+alpha = 2.5183
+scale_x = 1
+scale_z = 1.5
+scales = (scale_x,scale_z)
 uArr, vArr, bArr, phiArr, dt = open_fields(dataFile)
-uRef, vRef, bRef, phiRef = refine(uArr, vArr, bArr, phiArr,alpha,Nxold,Nzold,scale)
+uRef, vRef, bRef, phiRef = refine(uArr, vArr, bArr, phiArr,alpha,Nxold,Nzold,scales)
 saveArrs(uRef, vRef, bRef, phiRef,dt,newFile)
-'''     
-
+'''
 ####################
 ### for long run ###
 ####################
-'''
-R = 3500
+
+R = 1e6
 Pr = 7
 alpha = 2.5183
-Nx = 200
-Nz = 100
+Nx = 800
+Nz = 400
 ell = 0.1
 beta = 1
-T = 50
-timestep = 0.1
+T = 40
+timestep = 0.00001
 
 longRun(R,Pr,alpha,Nx,Nz,ell,beta,T,timestep)
-'''
+
 #########################################
 ### For finding a single steady state ###
 #########################################
@@ -181,7 +182,7 @@ ell = 0.1
 beta = 1
 T=1.0
 dtscale = 1
-guessFile = 'R3500Pr7alpha2.5183ell0.1beta1Nx200Nz100_T50.npy'
+guessFile = 'R3500Pr7alpha2.5183ell0.1beta1Nx200Nz100_T40.npy'
 steadyFile = 'R3500Pr7alpha2.5183ell0.1beta1Nx200Nz100_SS.npy'
 
 getSteady(Ra,Pr,alpha,Nx,Nz,ell,beta,T,1e-6,guessFile, steadyFile,dtscale)
@@ -189,27 +190,27 @@ getSteady(Ra,Pr,alpha,Nx,Nz,ell,beta,T,1e-6,guessFile, steadyFile,dtscale)
 ##############################
 ### For following a branch ###
 ##############################
-
+'''
 Pr = 7
 alpha = 2.5183
-Ra_start = 37923
-num_steps = 10
+Ra_start = 9078
+num_steps = 15
 Ra_step = 1.1
 Nx = 200
 Nz = 100
 ell = 0.1
 beta = 1
-startFile = 'Ra37923.0Pr7alpha2.5183Nx200Nz100_SS.npy'
+startFile = 'Ra9078.0Pr7alpha2.5183ell0.1beta1Nx200Nz100_SS.npy'
 T = 1.0
 tol = 1e-6
 dtscale = 1
 
 RaVals, NuVals = branchFollow(Pr, alpha, Ra_start, num_steps, Ra_step, Nx,Nz,ell,beta,startFile,T,tol,dtscale)
-
+'''
 ##################
 ### Vary alpha ###
 ##################
-
+'''
 startingFile = '/grad/gudibanda/expHeating_Convection/Ra10016.0Pr7alpha2.56201Nx120Nz84_SS.npy'
 Ra = 10016
 Pr = 7
@@ -222,3 +223,4 @@ ell = 0.1
 tol = 1e-6 
 
 searchOverAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingFile,tol)
+'''
