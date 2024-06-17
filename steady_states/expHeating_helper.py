@@ -68,8 +68,8 @@ class Laplacian_Problem:
         
 
 class expHeat_Problem:
-    def __init__(self,R,Pr,alpha,Nx,Nz,ell,beta,time_step=None,initial_u=None,initial_v=None,initial_phi=None,initial_b=None):
-        self.R = R
+    def __init__(self,Ra,Pr,alpha,Nx,Nz,ell,beta,time_step=None,initial_u=None,initial_v=None,initial_phi=None,initial_b=None):
+        self.Ra = Ra
         self.Pr = Pr
         self.alpha = alpha
         self.Nx = Nx
@@ -141,8 +141,10 @@ class expHeat_Problem:
         self.tau_b2 = tau_b2
         
         ## Substitutions
-        R = self.R
+        Ra = self.Ra
         Pr = self.Pr
+        #kappa = 4*(self.Ra * self.Pr)**(-1/2)
+        #nu = 4*(self.Ra / self.Pr)**(-1/2)
         self.x, self.z = self.dist.local_grids(self.xbasis, self.zbasis)
         self.ex, self.ez = self.coords.unit_vector_fields(self.dist)
         lift_basis = self.zbasis.clone_with(a=1/2, b=1/2) # First derivative basis
@@ -158,8 +160,9 @@ class expHeat_Problem:
         self.problem = d3.IVP([self.phi, self.u, self.v, self.b, self.tau_v1, self.tau_v2, self.tau_phi1, self.tau_phi2, self.tau_b1, self.tau_b2], namespace=locals())
     
         self.problem.add_equation("div(grad_v) + lift(tau_v2,-1) - phi= 0")
-        self.problem.add_equation("dt(phi) - Pr*div(grad_phi)-  Pr*R*dx(dx(b)) + lift(tau_phi2,-1) = -dx(u*phi - v*lap(u))  ")
+        self.problem.add_equation("dt(phi) - Pr*div(grad_phi)-  Pr*Ra*dx(dx(b)) + lift(tau_phi2,-1) = -dx(u*phi - v*lap(u))  ")
         self.problem.add_equation("dt(b) - div(grad_b) + lift(tau_b2,-1) = -u*dx(b)-v*dz(b)+Tsource")
+        #self.problem.add_equation("dt(b) - div(grad_b) + lift(tau_b2,-1) = -u*dx(b)-v*dz(b)+1")
         self.problem.add_equation("dx(u) + dz(v)+ lift(tau_v1,-1) = 0", condition='nx!=0')
         self.problem.add_equation("u = 0", condition='nx==0')
         self.problem.add_equation("b(z=1) = 0")
@@ -359,6 +362,10 @@ class expHeat_Problem:
             phiFromFile = np.load(l_File)
             dt = np.load(l_File)
         
+        # self.u['g'] = uFromFile
+        # self.v['g'] = vFromFile
+        # self.b['g'] = bFromFile
+        # self.phi['g'] = phiFromFile
         self.u.load_from_global_grid_data(uFromFile)
         self.v.load_from_global_grid_data(vFromFile)
         self.b.load_from_global_grid_data(bFromFile)
@@ -396,7 +403,7 @@ class expHeat_Problem:
             
         
     def __repr__(self):
-        repr_string = "Exponentially heated-cooled problem in configuration " + self.bcs + " with following params: \n" + "Ra= " + str(self.Ra) + "\n" + "Pr= " + str(self.Pr) + "\n" + "alpha= " + str(self.alpha) + "\n"
+        repr_string = "RBC Problem in configuration " + self.bcs + " with following params: \n" + "Ra= " + str(self.Ra) + "\n" + "Pr= " + str(self.Pr) + "\n" + "alpha= " + str(self.alpha) + "\n"
         repr_string = repr_string + "\n" + "Simulation params: \n" + "Nx= " + str(self.Nx) + "\n" + "Nz= " + str(self.Nz)
         return repr_string
     
