@@ -214,7 +214,7 @@ def follow_branch(Pr,alpha,Ra_start,num_steps,Ra_step, Nx, Nz,ell,beta, starting
     Nu_Vals = []
     guess = startingGuess
     dt = starting_dt
-    filename_end = 'Pr'+str(Pr)+'alpha'+str(alpha)+'Nx' + str(Nx) + 'Nz' + str(Nz) + '_SS.npy'
+    filename_end = 'Pr'+str(Pr)+'alpha'+str(alpha)+'ell'+str(ell)+'beta'+str(beta)+'Nx' + str(Nx) + 'Nz' + str(Nz) + '_SS.npy'
     for Ra in RaVals:
         steady = expHeat_Problem(Ra,Pr,alpha,Nx,Nz,ell,beta,time_step=dt)
         steady.initialize()
@@ -326,7 +326,7 @@ def varyAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingGuess,dt,to
         logger.info('Nu=%0.16f',Nu)
         alpha_Vals.append(alpha)
         NuVals.append(Nu)
-        alpha = alpha - alpha_step
+        alpha = alpha + alpha_step
         
         steady.b.change_scales(1)
         steady.phi.change_scales(1)
