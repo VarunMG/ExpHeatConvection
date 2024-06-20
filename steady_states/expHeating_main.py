@@ -127,7 +127,6 @@ def refine2(uArr,vArr,bArr,phiArr,alpha,NxOld,NzOld,NxNew,NzNew):
 '''
 dataFile = 'Ra85704.0Pr7alpha2.56201Nx180Nz130_SS.npy'
 newFile = 'Ra85704.0Pr7alpha2.56201Nx210Nz150_SS_refined.npy'
->>>>>>> 51fec7a7cbb36f4bb08c49f671057e07ebaacbc5
 NxOld = 180
 NzOld = 130
 alpha = 2.56201
@@ -156,24 +155,24 @@ saveArrs(uRef, vRef, bRef, phiRef,dt,newFile)
 ####################
 ### for long run ###
 ####################
-
-R = 3000
+'''
+R = 13785
 Pr = 7
 alpha = 2.5183
 Nx = 256
 Nz = 128
 ell = 0.1
 beta = 1
-T = 40
-timestep = 0.01
+T = 4
+timestep = 0.001
 
 longRun(R,Pr,alpha,Nx,Nz,ell,beta,T,timestep)
-
+'''
 #########################################
 ### For finding a single steady state ###
 #########################################
-'''
-Ra = 69674
+
+Ra = 13785
 Pr = 7
 alpha=2.5183
 Nx=256
@@ -181,13 +180,12 @@ Nz=128
 ell = 0.1
 beta = 1
 T=1.0
-dtscale = 1/1.2
-guessFile = 'Ra63340.0Pr7alpha2.5183ell0.1beta1Nx256Nz128_SS.npy'
-steadyFile = 'Ra69674.0Pr7alpha2.5183ell0.1beta1Nx256Nz128_SS.npy'
-
+dtscale = 1/0.5
+guessFile = 'R13785Pr7alpha2.5183ell0.1beta1Nx256Nz128_T4.npy'
+steadyFile = 'R13785Pr7alpha2.5183ell0.1beta1Nx256Nz128_T4_test.npy'
 
 getSteady(Ra,Pr,alpha,Nx,Nz,ell,beta,T,1e-6,guessFile, steadyFile,dtscale)
-'''
+
 ##############################
 ### For following a branch ###
 ##############################

@@ -207,7 +207,7 @@ class expHeat_Problem:
         ##defining timestepper
         timestepper = d3.RK443
         self.solver = self.problem.build_solver(timestepper)
-        max_timestep = 0.01
+        max_timestep = self.time_step
         
         # CFL
         self.CFL = d3.CFL(self.solver, initial_dt=max_timestep, cadence=10, safety=0.5, threshold=0.05,
@@ -247,7 +247,11 @@ class expHeat_Problem:
             framecount = 0
             X,Z = np.meshgrid(self.x.ravel(),self.z.ravel())
         
-        first_step = True
+        if self.time_step != None:
+            timestep = self.time_step
+        else:
+            timestep = self.CFL.compute_timestep()
+        #first_step = True
         if not write:
             for system in ['solvers']:
                 logging.getLogger(system).setLevel(logging.WARNING)
@@ -255,10 +259,13 @@ class expHeat_Problem:
             if write:
                 logger.info('Starting main loop')
             while self.solver.proceed:
-                if self.time_step != None and first_step:
-                    timestep = self.time_step
-                else:
-                    timestep = self.CFL.compute_timestep()
+                #if self.time_step != None and first_step:
+                    #logger.info('initializing first timestep')
+                    #timestep = self.time_step
+                    #first_step = False
+                #else:
+                    #logger.info('changing timestep according to CFL')
+                timestep = self.CFL.compute_timestep()
                 self.solver.step(timestep)
                 self.b['c'][1::2,:] = 0
                 self.v['c'][1::2,:] = 0
