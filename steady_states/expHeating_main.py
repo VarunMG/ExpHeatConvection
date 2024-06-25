@@ -155,54 +155,54 @@ saveArrs(uRef, vRef, bRef, phiRef,dt,newFile)
 ####################
 ### for long run ###
 ####################
-'''
-R = 13785
+
+R = 3e5
 Pr = 7
-alpha = 2.5183
-Nx = 256
-Nz = 128
+alpha = 2*np.pi/10
+Nx = 2048
+Nz = 256
 ell = 0.1
 beta = 1
-T = 4
-timestep = 0.001
+T = 10
+timestep = 0.00001
 
 longRun(R,Pr,alpha,Nx,Nz,ell,beta,T,timestep)
-'''
+
 #########################################
 ### For finding a single steady state ###
 #########################################
-
-Ra = 13785
+'''
+Ra = 650000
 Pr = 7
 alpha=2.5183
-Nx=256
-Nz=128
+Nx=512
+Nz=256
 ell = 0.1
 beta = 1
 T=1.0
-dtscale = 1/0.5
-guessFile = 'R13785Pr7alpha2.5183ell0.1beta1Nx256Nz128_T4.npy'
-steadyFile = 'R13785Pr7alpha2.5183ell0.1beta1Nx256Nz128_T4_test.npy'
+dtscale = 1/0.1
+guessFile = 'R650000.0Pr7alpha2.5183ell0.1beta1Nx512Nz256_T4.npy'
+steadyFile = 'R650000.0Pr7alpha2.5183ell0.1beta1Nx512Nz256_SS_largerdt.npy'
 
 getSteady(Ra,Pr,alpha,Nx,Nz,ell,beta,T,1e-6,guessFile, steadyFile,dtscale)
-
+'''
 ##############################
 ### For following a branch ###
 ##############################
 '''
 Pr = 7
 alpha = 2.5183
-Ra_start = 76641
-num_steps = 5
+Ra_start = 650000
+num_steps = 2
 Ra_step = 1.1
-Nx = 256
-Nz = 128
+Nx = 512
+Nz = 256
 ell = 0.1
 beta = 1
-startFile = 'Ra76641.0Pr7alpha2.5183ell0.1beta1Nx256Nz128_SS.npy'
+startFile = 'R650000.0Pr7alpha2.5183ell0.1beta1Nx512Nz256_SS.npy'
 T = 1.0
 tol = 1e-6
-dtscale = 1/1.1
+dtscale = 1/0.1
 
 RaVals, NuVals = branchFollow(Pr, alpha, Ra_start, num_steps, Ra_step, Nx,Nz,ell,beta,startFile,T,tol,dtscale)
 '''

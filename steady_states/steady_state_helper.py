@@ -227,7 +227,7 @@ def follow_branch(Pr,alpha,Ra_start,num_steps,Ra_step, Nx, Nz,ell,beta, starting
         logging.info("Ra= %i", Ra)
         #logging.info('Steady State Found. Iters = %i', iters)
         logging.info("Nu= %f", Nu)
-        saveFile = 'Ra'+str(Ra)+filename_end
+        saveFile = 'R'+str(Ra)+filename_end
         #saveFile = filename+'Ra'+str(Ra)+'.npy'
         steady.saveToFile(saveFile)
         
