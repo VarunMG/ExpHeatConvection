@@ -46,6 +46,15 @@ def searchOverAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingFile,
     alphaVals, NuVals = varyAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingGuess,dt,tol)
     return alphaVals, NuVals
 
+def getOptAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingFile,tol,outputOpt):
+    uArr, vArr, bArr, phiArr, dt = open_fields(startingFile)
+    starting_SS_state = arrsToStateVec(phiArr, bArr)
+    startingGuess = starting_SS_state
+    alphaVals, NuVals, alphaMax, NuMax = findOptAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingGuess,dt,tol,outputOpt)
+    return alphaVals, NuVals, alphaMax, NuMax
+
+
+
 def refine(uArr,vArr,bArr,phiArr,alpha,Nx,Nz,scales):
     ##run this using only ONE processor or else will not work
     print(uArr.shape)
@@ -155,19 +164,19 @@ saveArrs(uRef, vRef, bRef, phiRef,dt,newFile)
 ####################
 ### for long run ###
 ####################
-
-R = 3e5
+'''
+R = 6.5e5
 Pr = 7
-alpha = 2*np.pi/10
-Nx = 2048
+alpha = 2.5183
+Nx = 512
 Nz = 256
 ell = 0.1
 beta = 1
-T = 10
+T = 4
 timestep = 0.00001
 
 longRun(R,Pr,alpha,Nx,Nz,ell,beta,T,timestep)
-
+'''
 #########################################
 ### For finding a single steady state ###
 #########################################
@@ -180,7 +189,7 @@ Nz=256
 ell = 0.1
 beta = 1
 T=1.0
-dtscale = 1/0.1
+dtscale = 1
 guessFile = 'R650000.0Pr7alpha2.5183ell0.1beta1Nx512Nz256_T4.npy'
 steadyFile = 'R650000.0Pr7alpha2.5183ell0.1beta1Nx512Nz256_SS_largerdt.npy'
 
@@ -223,3 +232,21 @@ tol = 1e-6
 
 searchOverAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingFile,tol)
 '''
+##########################
+### Find optimal alpha ###
+##########################
+
+startingFile = 'Ra3630.0Pr7alpha2.5183ell0.1beta1Nx256Nz128_SS.npy'
+Ra = 3630
+Pr = 7
+starting_alpha = 2.5183
+alpha_step = 0.1
+Nx = 256
+Nz = 128
+beta = 1
+ell = 0.1
+tol = 1e-6
+outputOpt = True
+
+getOptAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingFile,tol,outputOpt)
+

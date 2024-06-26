@@ -247,6 +247,70 @@ def foundOptimalNu(NuArr):
         return True
     return False
 
+def findOptAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingGuess,dt,tol,outputOpt):
+    found = False
+    alpha = starting_alpha
+    guess = startingGuess
+    NuVals = []
+    alpha_Vals = []
+    max_iters = 50
+    iters = 0
+
+    while not found and iters <= max_iters:
+        logger.info('alpha values checked so far:')
+        logger.info(alpha_Vals)
+        logger.info('Nu values calculated so far:')
+        logger.info(NuVals)
+
+        steady = expHeat_Problem(Ra,Pr,alpha,Nx,Nz,ell,beta,time_step=dt)
+        steady.initialize()
+        steadystate_iters = findSteadyState(steady,guess,1.0,tol,50,False)
+        logger.info('alpha=%0.16f',alpha)
+        logger.info('steady state found!. Number of iters=%0.16f',steadystate_iters)
+        Nu= steady.calcNu()
+        logger.info('Nu=%0.16f',Nu)
+        alpha_Vals.append(alpha)
+        NuVals.append(Nu)
+        alpha = alpha + alpha_step
+        found = foundOptimalNu(NuVals)
+        if found:
+            print("we found an optimal alpha!")
+        else:
+            print("not yet found optimal alpha :( ")
+        iters += 1
+        steady.b.change_scales(1)
+        steady.phi.change_scales(1)
+        steady_b = steady.b.allgather_data('g')
+        steady_phi = steady.phi.allgather_data('g')
+        dt = steady.time_step
+        guess = arrsToStateVec(steady_phi, steady_b)
+    if found:
+        print("found an optimal state!!!")
+        optAlpha = np.array([alpha_Vals[-3],alpha_Vals[-2],alpha_Vals[-1]])
+        optNu = np.array([NuVals[-3],NuVals[-2],NuVals[-1]])
+        quadInterp = np.polyfit(optAlpha,optNu,2)
+        alphaMax = -1*quadInterp[1]/(2*quadInterp[0])
+        NuMax = quadInterp[0]*alphaMax**2 + quadInterp[1]*alphaMax + quadInterp[2]
+        if outputOpt:
+            steady = expHeat_Problem(Ra,Pr,alphaMax,Nx,Nz,ell,beta,time_step=dt)
+            steady.initialize()
+            steadystate_iters = findSteadyState(steady,guess,2,tol,50,False)
+            fileName = 'Pr'+str(Pr)+'alpha'+str(alpha)+'ell'+str(ell)+'beta'+str(beta)+'Nx' + str(Nx) + 'Nz' + str(Nz) + '_optimal_SS.npy'
+            steady.saveToFile(fileName)
+            print("Calculate Nu:")
+            print(steady.calcNu())
+        return alpha_Vals, NuVals, alphaMax, NuMax
+
+
+    logger.info('------------')
+    logger.info('alpha values:')
+    logger.info(alpha_Vals)
+    logger.info('Nu values:')
+    logger.info(NuVals)
+    return alpha_Vals,NuVals, None, None
+
+#below is old code
+'''
 def findOptimalAlpha(Ra,Pr,Nx,Nz,starting_alpha,alpha_step,startingGuess,dt,tol,outputOpt):
     found = False
     alpha = starting_alpha
@@ -303,7 +367,8 @@ def findOptimalAlpha(Ra,Pr,Nx,Nz,starting_alpha,alpha_step,startingGuess,dt,tol,
             print(steady.calc_Nu())
         return alpha_Vals, Nu_Vals, alphaMax, NuMax
     return alpha_Vals, Nu_Vals, -1, -1
-        
+'''
+
 def varyAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingGuess,dt,tol):
     alpha = starting_alpha
     guess = startingGuess
