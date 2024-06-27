@@ -236,8 +236,8 @@ searchOverAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingFile,tol)
 ### Find optimal alpha ###
 ##########################
 
-startingFile = 'Ra3630.0Pr7alpha2.5183ell0.1beta1Nx256Nz128_SS.npy'
-Ra = 3630
+startingFile = 'Ra6431.0Pr7alpha2.5183ell0.1beta1Nx256Nz128_SS.npy'
+Ra = 6431
 Pr = 7
 starting_alpha = 2.5183
 alpha_step = 0.1

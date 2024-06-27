@@ -274,9 +274,9 @@ def findOptAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingGuess,dt
         alpha = alpha + alpha_step
         found = foundOptimalNu(NuVals)
         if found:
-            print("we found an optimal alpha!")
+            logger.info("we found an optimal alpha!")
         else:
-            print("not yet found optimal alpha :( ")
+            logger.info("not yet found optimal alpha :( ")
         iters += 1
         steady.b.change_scales(1)
         steady.phi.change_scales(1)
@@ -285,20 +285,26 @@ def findOptAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingGuess,dt
         dt = steady.time_step
         guess = arrsToStateVec(steady_phi, steady_b)
     if found:
-        print("found an optimal state!!!")
+        logger.info('------------------------------------')
+        logger.info("found an optimal state!!!")
         optAlpha = np.array([alpha_Vals[-3],alpha_Vals[-2],alpha_Vals[-1]])
         optNu = np.array([NuVals[-3],NuVals[-2],NuVals[-1]])
         quadInterp = np.polyfit(optAlpha,optNu,2)
         alphaMax = -1*quadInterp[1]/(2*quadInterp[0])
         NuMax = quadInterp[0]*alphaMax**2 + quadInterp[1]*alphaMax + quadInterp[2]
+        logger.info('opt alpha from fit:')
+        logger.info(alphaMax)
+        logger.info('opt Nu from fit:')
+        logger.info(NuMax)
         if outputOpt:
+            logger.info('computing optimal steady state')
             steady = expHeat_Problem(Ra,Pr,alphaMax,Nx,Nz,ell,beta,time_step=dt)
             steady.initialize()
             steadystate_iters = findSteadyState(steady,guess,2,tol,50,False)
-            fileName = 'Pr'+str(Pr)+'alpha'+str(alpha)+'ell'+str(ell)+'beta'+str(beta)+'Nx' + str(Nx) + 'Nz' + str(Nz) + '_optimal_SS.npy'
+            fileName = 'R'+str(Ra)+'Pr'+str(Pr)+'alpha'+str(alphaMax)+'ell'+str(ell)+'beta'+str(beta)+'Nx' + str(Nx) + 'Nz' + str(Nz) + '_optimal_SS.npy'
             steady.saveToFile(fileName)
-            print("Calculate Nu:")
-            print(steady.calcNu())
+            logger.info("Calculated Nu:")
+            logger.info(steady.calcNu())
         return alpha_Vals, NuVals, alphaMax, NuMax
 
 
