@@ -46,11 +46,12 @@ def searchOverAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingFile,
     alphaVals, NuVals = varyAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingGuess,dt,tol)
     return alphaVals, NuVals
 
-def getOptAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingFile,tol,outputOpt):
+def getOptAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingFile,tol,dtscale,outputOpt):
     uArr, vArr, bArr, phiArr, dt = open_fields(startingFile)
     starting_SS_state = arrsToStateVec(phiArr, bArr)
     startingGuess = starting_SS_state
-    alphaVals, NuVals, alphaMax, NuMax = findOptAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingGuess,dt,tol,outputOpt)
+    startingdt = dt*dtscale
+    alphaVals, NuVals, alphaMax, NuMax = findOptAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingGuess,startingdt,tol,outputOpt)
     return alphaVals, NuVals, alphaMax, NuMax
 
 
@@ -165,15 +166,15 @@ saveArrs(uRef, vRef, bRef, phiRef,dt,newFile)
 ### for long run ###
 ####################
 '''
-R = 6.5e5
-Pr = 7
+R = 1e4
+Pr = 100
 alpha = 2.5183
-Nx = 512
-Nz = 256
+Nx = 256
+Nz = 128
 ell = 0.1
 beta = 1
-T = 4
-timestep = 0.00001
+T = 50
+timestep = 0.01
 
 longRun(R,Pr,alpha,Nx,Nz,ell,beta,T,timestep)
 '''
@@ -181,17 +182,17 @@ longRun(R,Pr,alpha,Nx,Nz,ell,beta,T,timestep)
 ### For finding a single steady state ###
 #########################################
 '''
-Ra = 650000
-Pr = 7
-alpha=2.5183
-Nx=512
-Nz=256
+Ra = 1.21e4
+Pr = 100
+alpha=3.067863350510217
+Nx=256
+Nz=128
 ell = 0.1
 beta = 1
 T=1.0
-dtscale = 1
-guessFile = 'R650000.0Pr7alpha2.5183ell0.1beta1Nx512Nz256_T4.npy'
-steadyFile = 'R650000.0Pr7alpha2.5183ell0.1beta1Nx512Nz256_SS_largerdt.npy'
+dtscale = 1/1.1
+guessFile = 'R11000.0Pr100alpha3.0343044260297445ell0.1beta1Nx256Nz128_optimal_SS.npy'
+steadyFile = 'R12100.0Pr100alpha3.067863350510217ell0.1beta1Nx256Nz128_optimal_SS.npy'
 
 getSteady(Ra,Pr,alpha,Nx,Nz,ell,beta,T,1e-6,guessFile, steadyFile,dtscale)
 '''
@@ -236,17 +237,18 @@ searchOverAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingFile,tol)
 ### Find optimal alpha ###
 ##########################
 
-startingFile = 'Ra6431.0Pr7alpha2.5183ell0.1beta1Nx256Nz128_SS.npy'
-Ra = 6431
-Pr = 7
-starting_alpha = 2.5183
-alpha_step = 0.1
+startingFile = 'R12100.0Pr100alpha3.067863350510217ell0.1beta1Nx256Nz128_optimal_SS.npy'
+Ra = 13310
+Pr = 100
+starting_alpha = 3.067863350510217
+alpha_step = 0.02
 Nx = 256
 Nz = 128
 beta = 1
 ell = 0.1
 tol = 1e-6
+dtscale = 1/1.1
 outputOpt = True
 
-getOptAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingFile,tol,outputOpt)
+getOptAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingFile,tol,dtscale,outputOpt)
 
