@@ -140,6 +140,13 @@ def Gt(X,T,problem):
 #    problem.v.load_from_global_grid_data(vStead)
 #    return X,i
 
+def saveIntermediate(X,F):
+    #phiArr, bArr = stateToArrs(X,256,128)
+    
+    #fileName = 'intermediate_iter_' + str(round(1000*np.linalg.norm(F))/1000) + '.npy'
+    #with open(fileName,'wb') as fluidData:
+        #np.save(fluidData,bArr)
+    return 0
 
 def findSteadyState(problem,guess,T,tol,max_iters,write):
     #problem.dt = 1e-4
@@ -147,7 +154,7 @@ def findSteadyState(problem,guess,T,tol,max_iters,write):
     GT_func = lambda X: Gt(X,T,problem)
     print('about to enter newt krylov')
     #err_func = lambda X: np.linalg.norm(GT_func(X))/normX0
-    sol=optimize.newton_krylov(GT_func,guess,verbose=True,maxiter=20)#,tol_norm=err_func)
+    sol=optimize.newton_krylov(GT_func,guess,verbose=True,maxiter=200,callback=saveIntermediate)#,tol_norm=err_func)
     return sol
     
 
@@ -247,7 +254,7 @@ def foundOptimalNu(NuArr):
         return True
     return False
 
-def findOptAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingGuess,dt,tol,outputOpt):
+def findOptAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingGuess,T,dt,tol,outputOpt):
     found = False
     alpha = starting_alpha
     guess = startingGuess
@@ -264,7 +271,7 @@ def findOptAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingGuess,dt
 
         steady = expHeat_Problem(Ra,Pr,alpha,Nx,Nz,ell,beta,time_step=dt)
         steady.initialize()
-        steadystate_iters = findSteadyState(steady,guess,1.0,tol,50,False)
+        steadystate_iters = findSteadyState(steady,guess,T,tol,50,False)
         logger.info('alpha=%0.16f',alpha)
         logger.info('steady state found!. Number of iters=%0.16f',steadystate_iters)
         Nu= steady.calcNu()
@@ -300,7 +307,7 @@ def findOptAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingGuess,dt
             logger.info('computing optimal steady state')
             steady = expHeat_Problem(Ra,Pr,alphaMax,Nx,Nz,ell,beta,time_step=dt)
             steady.initialize()
-            steadystate_iters = findSteadyState(steady,guess,2,tol,50,False)
+            steadystate_iters = findSteadyState(steady,guess,T,tol,50,False)
             fileName = 'R'+str(Ra)+'Pr'+str(Pr)+'alpha'+str(alphaMax)+'ell'+str(ell)+'beta'+str(beta)+'Nx' + str(Nx) + 'Nz' + str(Nz) + '_optimal_SS.npy'
             steady.saveToFile(fileName)
             logger.info("Calculated Nu:")

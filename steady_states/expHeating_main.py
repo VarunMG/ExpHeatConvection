@@ -46,12 +46,12 @@ def searchOverAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingFile,
     alphaVals, NuVals = varyAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingGuess,dt,tol)
     return alphaVals, NuVals
 
-def getOptAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingFile,tol,dtscale,outputOpt):
+def getOptAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingFile,tol,T,dtscale,outputOpt):
     uArr, vArr, bArr, phiArr, dt = open_fields(startingFile)
     starting_SS_state = arrsToStateVec(phiArr, bArr)
     startingGuess = starting_SS_state
     startingdt = dt*dtscale
-    alphaVals, NuVals, alphaMax, NuMax = findOptAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingGuess,startingdt,tol,outputOpt)
+    alphaVals, NuVals, alphaMax, NuMax = findOptAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingGuess,T,startingdt,tol,outputOpt)
     return alphaVals, NuVals, alphaMax, NuMax
 
 
@@ -166,15 +166,15 @@ saveArrs(uRef, vRef, bRef, phiRef,dt,newFile)
 ### for long run ###
 ####################
 '''
-R = 1e4
+R = 1e5
 Pr = 100
-alpha = 2.5183
+alpha = 4.5
 Nx = 256
 Nz = 128
 ell = 0.1
 beta = 1
-T = 50
-timestep = 0.01
+T = 2.3
+timestep = 0.0001
 
 longRun(R,Pr,alpha,Nx,Nz,ell,beta,T,timestep)
 '''
@@ -182,17 +182,17 @@ longRun(R,Pr,alpha,Nx,Nz,ell,beta,T,timestep)
 ### For finding a single steady state ###
 #########################################
 '''
-Ra = 1.21e4
+Ra = 1.1e5
 Pr = 100
-alpha=3.067863350510217
+alpha=4.5
 Nx=256
 Nz=128
 ell = 0.1
 beta = 1
-T=1.0
-dtscale = 1/1.1
-guessFile = 'R11000.0Pr100alpha3.0343044260297445ell0.1beta1Nx256Nz128_optimal_SS.npy'
-steadyFile = 'R12100.0Pr100alpha3.067863350510217ell0.1beta1Nx256Nz128_optimal_SS.npy'
+T=2.0
+dtscale = 1/2
+guessFile = 'R100000.0Pr100alpha4.5ell0.1beta1Nx256Nz128_SS.npy'
+steadyFile = 'R110000.0Pr100alpha4.5ell0.1beta1Nx256Nz128_SS.npy'
 
 getSteady(Ra,Pr,alpha,Nx,Nz,ell,beta,T,1e-6,guessFile, steadyFile,dtscale)
 '''
@@ -200,19 +200,19 @@ getSteady(Ra,Pr,alpha,Nx,Nz,ell,beta,T,1e-6,guessFile, steadyFile,dtscale)
 ### For following a branch ###
 ##############################
 '''
-Pr = 7
+Pr = 100
 alpha = 2.5183
-Ra_start = 650000
-num_steps = 2
+Ra_start = 21436
+num_steps = 3
 Ra_step = 1.1
-Nx = 512
-Nz = 256
+Nx = 256
+Nz = 128
 ell = 0.1
 beta = 1
-startFile = 'R650000.0Pr7alpha2.5183ell0.1beta1Nx512Nz256_SS.npy'
-T = 1.0
+startFile = 'R21436.0Pr100alpha2.5183ell0.1beta1Nx256Nz128_SS.npy'
+T = 0.15
 tol = 1e-6
-dtscale = 1/0.1
+dtscale = 1/1.5
 
 RaVals, NuVals = branchFollow(Pr, alpha, Ra_start, num_steps, Ra_step, Nx,Nz,ell,beta,startFile,T,tol,dtscale)
 '''
@@ -237,18 +237,21 @@ searchOverAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingFile,tol)
 ### Find optimal alpha ###
 ##########################
 
-startingFile = 'R12100.0Pr100alpha3.067863350510217ell0.1beta1Nx256Nz128_optimal_SS.npy'
-Ra = 13310
+startingFile = 'R100000.0Pr100alpha4.5ell0.1beta1Nx256Nz128_SS.npy'
+R = 1e5
 Pr = 100
-starting_alpha = 3.067863350510217
+starting_alpha = 4.5
 alpha_step = 0.02
 Nx = 256
 Nz = 128
 beta = 1
 ell = 0.1
 tol = 1e-6
-dtscale = 1/1.1
+T = 0.2
+dtscale = 1/1.5
 outputOpt = True
 
-getOptAlpha(Ra,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingFile,tol,dtscale,outputOpt)
+logger.info('T=%0.16f',T)
+
+getOptAlpha(R,Pr,Nx,Nz,ell,beta,starting_alpha,alpha_step,startingFile,tol,T,dtscale,outputOpt)
 
